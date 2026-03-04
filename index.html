@@ -352,6 +352,49 @@
       font-size: 0.92rem;
     }
 
+    /* ── Tip Widget ── */
+    .tip-widget {
+      background: linear-gradient(135deg, #fffcf5 0%, #fff9ec 100%);
+      border: 1.5px solid var(--gold);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+    }
+    .tip-widget p {
+      font-size: 0.9rem;
+      color: var(--warm-brown);
+      margin-bottom: 0.9rem;
+      font-style: italic;
+    }
+    .tip-widget p strong { font-style: normal; color: var(--dark-brown); }
+    .tip-amounts {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tip-btn {
+      padding: 0.5rem 1.1rem;
+      border-radius: 20px;
+      border: 1.5px solid var(--gold);
+      background: white;
+      color: var(--dark-brown);
+      font-size: 0.9rem;
+      font-family: 'Arial', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      display: inline-block;
+    }
+    .tip-btn:hover { background: var(--gold); color: var(--dark-brown); transform: translateY(-1px); }
+    .tip-btn.tip-custom {
+      background: var(--warm-brown);
+      color: white;
+      border-color: var(--warm-brown);
+    }
+    .tip-btn.tip-custom:hover { background: var(--dark-brown); border-color: var(--dark-brown); }
+
     /* ── Footer ── */
     footer {
       text-align: center;
@@ -501,7 +544,7 @@
     </div>
     <p class="api-note">
       Your key is used only in your browser to call the AI — it's never stored or sent anywhere else.
-      Don't have one? <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Get a free key at console.anthropic.com</a>. You can add credits under your Settings in Billing. Each Lineage Lore generation costs about 3 cents.
+      Don't have one? <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Get a free key at console.anthropic.com</a>. Each Lineage Lore generation requires about 3 cents of usage. You can go to Settings then Billing to add credit.
     </p>
   </div>
 
@@ -779,6 +822,17 @@
         <button class="action-btn btn-copy" onclick="copyText()">📋 Copy Text</button>
         <button class="action-btn btn-again" onclick="generateStory()">🔄 Regenerate</button>
       </div>
+      <div style="padding: 0 1.5rem 1.75rem;">
+        <div class="tip-widget">
+          <p><strong>Enjoyed your family history?</strong><br />If this brought your story to life, a small tip means the world 💛</p>
+          <div class="tip-amounts">
+            <a class="tip-btn" href="https://buy.stripe.com/00waEZ3Afg1h3Q26wyaEE00?prefilled_amount=300" target="_blank" rel="noopener">☕ $3</a>
+            <a class="tip-btn" href="https://buy.stripe.com/00waEZ3Afg1h3Q26wyaEE00?prefilled_amount=500" target="_blank" rel="noopener">🌟 $5</a>
+            <a class="tip-btn" href="https://buy.stripe.com/00waEZ3Afg1h3Q26wyaEE00?prefilled_amount=1000" target="_blank" rel="noopener">✨ $10</a>
+            <a class="tip-btn tip-custom" href="https://buy.stripe.com/00waEZ3Afg1h3Q26wyaEE00" target="_blank" rel="noopener">💛 Custom amount</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -787,6 +841,11 @@
 <footer>
   Built with ❤️ using the <a href="https://console.anthropic.com/" style="color:var(--warm-brown);">Claude API</a> by Anthropic.
   Your data never leaves your browser.
+  <br style="margin-bottom: 0.5rem;" />
+  <a href="https://buy.stripe.com/00waEZ3Afg1h3Q26wyaEE00" target="_blank" rel="noopener"
+     style="color:var(--warm-brown); font-size:0.85rem; text-decoration:none; border-bottom: 1px dashed var(--gold);">
+    💛 Enjoying this? Leave a tip
+  </a>
 </footer>
 
 <script>
