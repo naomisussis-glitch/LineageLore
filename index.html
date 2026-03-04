@@ -362,6 +362,107 @@
       border-top: 1px solid var(--border);
     }
 
+    /* ── File Upload Zones ── */
+    .upload-section {
+      margin-bottom: 1.5rem;
+    }
+    .upload-section:last-child { margin-bottom: 0; }
+    .upload-section-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--dark-brown);
+      font-family: 'Arial', sans-serif;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .upload-section-desc {
+      font-size: 0.83rem;
+      color: var(--muted);
+      font-family: 'Arial', sans-serif;
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+    .upload-section-desc a { color: var(--warm-brown); }
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fdfaf5;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--gold);
+      background: var(--gold-light);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+    .upload-zone input[type="file"]:focus { box-shadow: none; border: none; }
+    .upload-icon { font-size: 2rem; display: block; margin-bottom: 0.4rem; }
+    .upload-zone p { font-size: 0.88rem; color: var(--muted); font-family: 'Arial', sans-serif; }
+    .upload-zone strong { color: var(--warm-brown); }
+
+    .file-status {
+      margin-top: 0.6rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-family: 'Arial', sans-serif;
+      display: none;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .file-status.success {
+      background: #f0fff4;
+      border: 1px solid #68d391;
+      color: #276749;
+      display: flex;
+    }
+    .file-status.warning {
+      background: #fffbeb;
+      border: 1px solid #f6c90e;
+      color: #7d5a00;
+      display: flex;
+    }
+    .file-status.error {
+      background: #fff5f5;
+      border: 1px solid #fc8181;
+      color: #c53030;
+      display: flex;
+    }
+    .file-status-icon { flex-shrink: 0; }
+    .file-status-text { line-height: 1.4; }
+    .file-status-text strong { display: block; margin-bottom: 0.1rem; }
+
+    .dna-image-preview {
+      margin-top: 0.6rem;
+      max-width: 100%;
+      max-height: 180px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      object-fit: contain;
+      display: none;
+    }
+
+    .upload-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       header h1 { font-size: 1.8rem; }
@@ -400,7 +501,7 @@
     </div>
     <p class="api-note">
       Your key is used only in your browser to call the AI — it's never stored or sent anywhere else.
-      Don't have one? <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Get a free key at console.anthropic.com</a>. You can add credit in Billing under Settings--each Lineage Lore costs several cents of credit.
+      Don't have one? <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Get a free key at console.anthropic.com</a>. You can add credits under your Settings in Billing. Each Lineage Lore generation costs about 3 cents.
     </p>
   </div>
 
@@ -432,6 +533,54 @@
         <label for="your-extra">Anything else about you? <span class="optional-tag">(optional)</span></label>
         <textarea id="your-extra" placeholder="e.g. Profession, interests, how you got interested in your family history…"></textarea>
       </div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 2.5: FILE UPLOADS ─── -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🧬</span> Upload Your Files <span class="optional-tag" style="font-size:0.85rem; font-weight:normal; margin-left:0.3rem;">(optional — enriches the story significantly)</span></div>
+
+    <!-- GEDCOM Family Tree -->
+    <div class="upload-section">
+      <div class="upload-section-title">🌲 Family Tree (GEDCOM file)</div>
+      <div class="upload-section-desc">
+        Export your family tree from <strong>Ancestry.com</strong>, <strong>MyHeritage</strong>, or <strong>FamilySearch</strong> as a <code>.ged</code> file, then upload it here. The AI will read all the names, dates, and places automatically.<br />
+        <em>On Ancestry: go to your tree → click the three-dot menu → Export Tree → Download GEDCOM.</em>
+        <br /><em>Note: Ancestry.com links to your tree can't be read directly (they're private), so the GEDCOM export is the best way to share your tree.</em>
+      </div>
+      <div class="upload-zone" id="gedcom-zone">
+        <input type="file" id="gedcom-file" accept=".ged,.gedcom,.GED" onchange="handleGedcomUpload(this)" />
+        <span class="upload-icon">📂</span>
+        <p><strong>Click to choose a .ged file</strong> or drag and drop it here</p>
+        <p style="margin-top:0.25rem; font-size:0.78rem;">Supports .ged / .gedcom files from Ancestry, MyHeritage, FamilySearch &amp; more</p>
+      </div>
+      <div class="file-status" id="gedcom-status">
+        <span class="file-status-icon"></span>
+        <div class="file-status-text"></div>
+      </div>
+    </div>
+
+    <hr class="upload-divider" />
+
+    <!-- DNA Results -->
+    <div class="upload-section">
+      <div class="upload-section-title">🧪 DNA / Ethnicity Results</div>
+      <div class="upload-section-desc">
+        Upload a <strong>screenshot or photo</strong> of your ethnicity results from Ancestry or 23andMe — the AI will read the image and extract your breakdown. You can also upload a <strong>text file</strong> of your results if you've saved one.
+        <br /><em>Tip: On 23andMe, go to Ancestry → Ancestry Composition. On Ancestry, go to DNA → Ethnicity Estimate. Take a screenshot and upload it here.</em>
+        <br /><em>Note: Raw DNA data files (the large rsID files) contain genetic markers that can't be interpreted for ancestry without specialist software — please upload a screenshot of your ethnicity estimate page instead.</em>
+      </div>
+      <div class="upload-zone" id="dna-zone">
+        <input type="file" id="dna-file" accept="image/*,.txt,.csv" onchange="handleDnaUpload(this)" />
+        <span class="upload-icon">🖼️</span>
+        <p><strong>Click to choose an image or text file</strong></p>
+        <p style="margin-top:0.25rem; font-size:0.78rem;">Supports PNG, JPG, WEBP screenshots · or plain text/CSV ethnicity exports</p>
+      </div>
+      <div class="file-status" id="dna-file-status">
+        <span class="file-status-icon"></span>
+        <div class="file-status-text"></div>
+      </div>
+      <img id="dna-image-preview" class="dna-image-preview" alt="DNA results preview" />
     </div>
   </div>
 
@@ -641,6 +790,230 @@
 </footer>
 
 <script>
+  // ── Global file state ──
+  let gedcomSummary = '';      // Formatted text extracted from GEDCOM
+  let dnaImageBase64 = null;   // { data: base64string, mediaType: 'image/png' }
+  let dnaTextContent = '';     // Ethnicity text from uploaded text file
+
+  // ═══════════════════════════════════════════════════════
+  //  GEDCOM PARSER
+  // ═══════════════════════════════════════════════════════
+
+  function handleGedcomUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const result = parseGEDCOM(text);
+        gedcomSummary = result.summary;
+        showFileStatus('gedcom-status', 'success',
+          `✅ Tree loaded: ${result.peopleCount} people, ${result.familyCount} family connections found.`,
+          result.preview);
+      } catch (err) {
+        gedcomSummary = '';
+        showFileStatus('gedcom-status', 'error', '❌ Could not read this file.', 'Make sure it is a valid .ged GEDCOM file exported from Ancestry, MyHeritage, or FamilySearch.');
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  function parseGEDCOM(text) {
+    const lines = text.split(/\r?\n/);
+    const individuals = {};
+    const families    = {};
+
+    let curId   = null;
+    let curType = null; // 'INDI' | 'FAM'
+    let curTag  = null; // last level-1 tag seen
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      const parts = line.split(/\s+/);
+      const level = parseInt(parts[0], 10);
+      if (isNaN(level)) continue;
+      const tag   = parts[1] || '';
+      const value = parts.slice(2).join(' ');
+
+      if (level === 0) {
+        curTag = null;
+        if (value === 'INDI') {
+          curId   = tag;
+          curType = 'INDI';
+          individuals[curId] = { id: curId, name: '', sex: '', birth: {}, death: {}, occu: '', fams: [], famc: [] };
+        } else if (value === 'FAM') {
+          curId   = tag;
+          curType = 'FAM';
+          families[curId]  = { id: curId, husb: '', wife: '', children: [] };
+        } else {
+          curId   = null;
+          curType = null;
+        }
+        continue;
+      }
+
+      if (!curId) continue;
+
+      if (level === 1) {
+        curTag = tag;
+        const obj = curType === 'INDI' ? individuals[curId] : families[curId];
+        if (!obj) continue;
+
+        if (curType === 'INDI') {
+          if (tag === 'NAME')  obj.name = value.replace(/\//g, '').replace(/\s+/g, ' ').trim();
+          if (tag === 'SEX')   obj.sex  = value;
+          if (tag === 'OCCU')  obj.occu = value;
+          if (tag === 'FAMS')  obj.fams.push(value);
+          if (tag === 'FAMC')  obj.famc.push(value);
+        } else {
+          if (tag === 'HUSB') obj.husb = value;
+          if (tag === 'WIFE') obj.wife = value;
+          if (tag === 'CHIL') obj.children.push(value);
+        }
+      }
+
+      if (level === 2 && curType === 'INDI' && individuals[curId]) {
+        const ind = individuals[curId];
+        if (curTag === 'BIRT') {
+          if (tag === 'DATE') ind.birth.date  = value;
+          if (tag === 'PLAC') ind.birth.place = value;
+        }
+        if (curTag === 'DEAT') {
+          if (tag === 'DATE') ind.death.date  = value;
+          if (tag === 'PLAC') ind.death.place = value;
+        }
+      }
+    }
+
+    // Build readable summary lines
+    const indiList = Object.values(individuals);
+    const famList  = Object.values(families);
+
+    // Format one person line
+    function personLine(ind) {
+      let parts = [ind.name || '(unnamed)'];
+      const born = [ind.birth.date, ind.birth.place].filter(Boolean).join(', ');
+      const died = [ind.death.date, ind.death.place].filter(Boolean).join(', ');
+      if (born) parts.push(`b. ${born}`);
+      if (died) parts.push(`d. ${died}`);
+      if (ind.occu) parts.push(ind.occu);
+      return parts.join(' · ');
+    }
+
+    // Cap at 80 individuals to avoid prompt overflow
+    const shown = indiList.slice(0, 80);
+    const indiLines = shown.map(i => `  • ${personLine(i)}`).join('\n');
+
+    // Family relationships (cap at 40)
+    const famLines = famList.slice(0, 40).map(f => {
+      const h = individuals[f.husb];
+      const w = individuals[f.wife];
+      const hName = h ? (h.name || '?') : '?';
+      const wName = w ? (w.name || '?') : '?';
+      const childNames = f.children.slice(0, 6).map(cId => {
+        const c = individuals[cId];
+        return c ? (c.name || '?') : '?';
+      });
+      let line = `  ${hName} + ${wName}`;
+      if (childNames.length) line += ` → children: ${childNames.join(', ')}`;
+      return line;
+    }).join('\n');
+
+    const overflowNote = indiList.length > 80 ? `\n  (…and ${indiList.length - 80} more individuals in the tree)` : '';
+
+    const summary =
+`UPLOADED FAMILY TREE (GEDCOM — ${indiList.length} individuals, ${famList.length} families):
+
+Individuals:
+${indiLines}${overflowNote}
+
+Family connections:
+${famLines || '  (none found)'}`;
+
+    const previewNames = shown.slice(0, 5).map(i => i.name).filter(Boolean);
+    const preview = `Includes: ${previewNames.join(', ')}${indiList.length > 5 ? ` and ${indiList.length - 5} more…` : ''}`;
+
+    return { summary, peopleCount: indiList.length, familyCount: famList.length, preview };
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  DNA FILE HANDLER
+  // ═══════════════════════════════════════════════════════
+
+  function handleDnaUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const isImage = file.type.startsWith('image/');
+    const isText  = file.type === 'text/plain' || file.type === 'text/csv' || file.name.endsWith('.txt') || file.name.endsWith('.csv');
+
+    if (isImage) {
+      // Read as base64 for Claude vision
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target.result.split(',')[1];
+        dnaImageBase64 = { data: base64, mediaType: file.type || 'image/png' };
+        dnaTextContent = '';
+        // Show preview
+        const preview = document.getElementById('dna-image-preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        showFileStatus('dna-file-status', 'success',
+          `✅ Image uploaded: ${file.name}`,
+          'The AI will read your ethnicity results from this image when generating your story.');
+      };
+      reader.readAsDataURL(file);
+
+    } else if (isText) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        // Detect raw SNP DNA files (rsID format) — not useful for storytelling
+        const firstLines = text.split('\n').filter(l => !l.startsWith('#')).slice(0, 5).join('\n');
+        const isRawSnp = /^rs\d+\t/m.test(firstLines);
+
+        if (isRawSnp) {
+          dnaTextContent = '';
+          dnaImageBase64 = null;
+          document.getElementById('dna-image-preview').style.display = 'none';
+          showFileStatus('dna-file-status', 'warning',
+            '⚠️ This looks like a raw genetic marker file (rsID format).',
+            'Raw DNA data contains millions of genetic markers that can\'t be converted to an ethnicity estimate here. Instead, please take a screenshot of your "Ethnicity Estimate" page on Ancestry or 23andMe and upload that image.');
+        } else {
+          // Treat as ethnicity report text — cap at 2000 chars
+          dnaTextContent = text.slice(0, 2000);
+          dnaImageBase64 = null;
+          document.getElementById('dna-image-preview').style.display = 'none';
+          showFileStatus('dna-file-status', 'success',
+            `✅ Text file uploaded: ${file.name}`,
+            'Your ethnicity text will be included in the story prompt.');
+        }
+      };
+      reader.readAsText(file, 'UTF-8');
+
+    } else {
+      showFileStatus('dna-file-status', 'error', '❌ Unsupported file type.',
+        'Please upload a PNG/JPG/WEBP screenshot of your ethnicity results, or a .txt text file.');
+    }
+  }
+
+  // ── File status helper ──
+  function showFileStatus(id, type, title, detail) {
+    const el = document.getElementById(id);
+    el.className = `file-status ${type}`;
+    el.querySelector('.file-status-text').innerHTML =
+      `<strong>${title}</strong>${detail ? `<span>${detail}</span>` : ''}`;
+  }
+
+  // ── Drag-and-drop styling for upload zones ──
+  document.querySelectorAll('.upload-zone').forEach(zone => {
+    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop',      e => { e.preventDefault(); zone.classList.remove('drag-over'); });
+  });
+
   // ── Tone option click handling ──
   document.querySelectorAll('.tone-option').forEach(opt => {
     opt.addEventListener('click', () => {
@@ -764,9 +1137,11 @@ ${gpBlock(3)}
 
 ${surnames ? `Notable family surnames: ${surnames}` : ''}
 ${extraStories ? `Extra family stories and context: ${extraStories}` : ''}
+${dnaTextContent ? `\nUPLOADED DNA / ETHNICITY TEXT FILE:\n${dnaTextContent}` : ''}
+${gedcomSummary ? `\n${gedcomSummary}` : ''}
 ---
 
-Write the family history now, in flowing prose paragraphs only:`;
+${dnaImageBase64 ? 'An image of the person\'s DNA ethnicity results has also been provided (see the image in this message). Please read and incorporate those ethnicity percentages into the narrative.\n\n' : ''}Write the family history now, in flowing prose paragraphs only:`;
 
     return prompt;
   }
@@ -792,10 +1167,33 @@ Write the family history now, in flowing prose paragraphs only:`;
     // UI: show loading
     document.getElementById('generate-btn').disabled = true;
     document.getElementById('loading').style.display = 'block';
+    document.getElementById('loading').querySelector('p').innerHTML =
+      [gedcomSummary ? '🌲 Reading your family tree…' : '',
+       dnaImageBase64 ? '🧬 Analysing your DNA results image…' : '',
+       'Writing your family history…'].filter(Boolean).join('<br />') +
+      '<br /><small style="color:var(--muted);">This takes around 15–30 seconds.</small>';
     document.getElementById('output-section').style.display = 'none';
     document.getElementById('error-box').style.display = 'none';
 
     const prompt = buildPrompt();
+
+    // Build the message content — text only, or text + image for vision
+    let messageContent;
+    if (dnaImageBase64) {
+      messageContent = [
+        {
+          type: 'image',
+          source: {
+            type: 'base64',
+            media_type: dnaImageBase64.mediaType,
+            data: dnaImageBase64.data
+          }
+        },
+        { type: 'text', text: prompt }
+      ];
+    } else {
+      messageContent = prompt;
+    }
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -809,7 +1207,7 @@ Write the family history now, in flowing prose paragraphs only:`;
         body: JSON.stringify({
           model: 'claude-opus-4-5-20251101',
           max_tokens: 1200,
-          messages: [{ role: 'user', content: prompt }]
+          messages: [{ role: 'user', content: messageContent }]
         })
       });
 
@@ -871,4 +1269,3 @@ Write the family history now, in flowing prose paragraphs only:`;
 
 </body>
 </html>
-
